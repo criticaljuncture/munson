@@ -298,7 +298,7 @@ Two special options can be passed into ```.configure```:
 * ```url``` the base url for this endpoint
 * ```response_key_format``` the format of the JSONAPI response keys. Valid values are: ```:dasherize```, ```:camelize```, ```nil```
 
-Additinally any Faraday Connection options can be passed. [Faraday::Connection options](https://github.com/lostisland/faraday/blob/master/lib/faraday/connection.rb Faraday::Connection)
+Additinally any Faraday Connection options can be passed. [Faraday::Connection options](https://github.com/lostisland/faraday/blob/master/lib/faraday/connection.rb)
 
 
 ## Advanced Usage
