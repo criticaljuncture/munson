@@ -51,6 +51,8 @@ module Munson
   # @example Mapping an unregistered type
   #
   class ResponseMapper
+    ResponseMapperException = Class.new(StandardError)
+
     # @param [Hash] response_body jsonapi formatted hash
     def initialize(response_body)
       @body = response_body
@@ -63,7 +65,7 @@ module Munson
     # * links: a links object related to the primary data.
     def collection
       if errors?
-        raise Exception, "IMPLEMENT ERRORS JERK"
+        raise ResponseMapperException, errors.inspect
       elsif collection?
         # Make each item in :data its own document, stick included into that document
         records = @body[:data].reduce([]) do |agg, resource|
@@ -85,7 +87,7 @@ module Munson
 
     def resource
       if errors?
-        raise Exception, "IMPLEMENT ERRORS JERK"
+        raise ResponseMapperException, errors.inspect
       elsif resource?
         Munson.factory(@body)
       else
@@ -99,15 +101,21 @@ module Munson
       (data + included)
     end
 
-    private def errors?
-      @body[:errors].is_a?(Array)
+    private
+
+    def errors
+      @body[:errors]
     end
 
-    private def resource?
+    def errors?
+      errors.is_a?(Array)
+    end
+
+    def resource?
       @body[:data].is_a?(Hash)
     end
 
-    private def collection?
+    def collection?
       @body[:data].is_a?(Array)
     end
   end
