@@ -3,16 +3,19 @@ require 'core_ext/object/deep_dup'
 module Munson
   class Document
     attr_accessor :id
-    attr_reader :type
+    attr_reader :type, :document
 
-    def initialize(jsonapi_document)
-      @id   = jsonapi_document[:data][:id]
-      @type = jsonapi_document[:data][:type].to_sym
-      @jsonapi_document = jsonapi_document
+    def initialize(document)
+      @document = document
 
-      if jsonapi_document[:data] && jsonapi_document[:data][:attributes]
-        @original_attributes = jsonapi_document[:data][:attributes]
-        @attributes          = jsonapi_document[:data][:attributes].deep_dup
+      if document[:data]
+        @id   = document[:data][:id]
+        @type = document[:data][:type].to_sym
+      end
+
+      if document[:data] && document[:data][:attributes]
+        @original_attributes = document[:data][:attributes]
+        @attributes          = document[:data][:attributes].deep_dup
       else
         @original_attributes = {}
         @attributes          = {}
@@ -32,11 +35,11 @@ module Munson
     end
 
     def data
-      @jsonapi_document[:data]
+      @document[:data]
     end
 
     def included
-      @jsonapi_document[:included] || []
+      @document[:included] || []
     end
 
     def attributes
@@ -84,20 +87,20 @@ module Munson
     end
 
     def errors
-      data[:errors] || []
+      document[:errors] || []
     end
 
     # Raw relationship hashes
     def relationships
-      data[:relationships] || {}
+      document[:data][:relationships] || {}
     end
 
     def links
-      data[:links] || {}
+      document[:links] || {}
     end
 
     def meta
-      data[:meta] || {}
+      document[:meta] || {}
     end
 
     # Initialized {Munson::Document} from #relationships
