@@ -3,9 +3,10 @@ require 'core_ext/object/deep_dup'
 module Munson
   class Document
     attr_accessor :id
-    attr_reader :type, :document
+    attr_reader :type, :document, :response
 
-    def initialize(document)
+    def initialize(document, response = nil)
+      @response = response
       @document = document
 
       if document[:data]
@@ -75,7 +76,7 @@ module Munson
         agent.post(body: payload)
       end
 
-      Munson::Document.new(response.body)
+      Munson::Document.new(response.body, response)
     end
 
     def url
